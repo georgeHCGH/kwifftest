@@ -6,7 +6,21 @@
 
 
 provider "aws" {
-  region = "aws_region"
+  region = "your_aws_region"
+}
+
+data "aws_s3_bucket" "selected" {
+  bucket = "Deployment"
+}
+
+resource "aws_s3_bucket" "deployment_bucket" {
+  bucket = "Deployment"
+}
+
+resource "aws_s3_bucket_object" "lambda_code_object" {
+  bucket = aws_s3_bucket.Deployment.bucket
+  key    = "Build.zip"
+  source = data.archive_file.lambda_code.output_path
 }
 
 resource "aws_lambda_function" "service1" {
