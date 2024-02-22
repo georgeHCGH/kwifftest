@@ -1,0 +1,42 @@
+#We have 3 deployments running within a namespace on an EKS cluster, call them “Service1”, “Service2”, “Service3” 
+#and all 3 have their own nodeport svc configured call them “Service1NodePort”, “Service2NodePort”, “Service3NodePort”.
+#We require an ingress that would allow a single external service to send requests to these deployments via https.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: namespace
+  annotations:
+    kubernetes.io/ingress.class: "nginx" 
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: your.domain.com 
+    http:
+      paths:
+      - path: /service1
+        pathType: Prefix
+        backend:
+          service:
+            name: Service1NodePort
+            port:
+              number: 443
+      - path: /service2
+        pathType: Prefix
+        backend:
+          service:
+            name: Service2NodePort
+            port:
+              number: 443
+      - path: /service3
+        pathType: Prefix
+        backend:
+          service:
+            name: Service3NodePort
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - your.domain.com 
+    secretName: your-tls-secret
