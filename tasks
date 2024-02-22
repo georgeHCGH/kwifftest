@@ -1,0 +1,16 @@
+Kwiff DevOps Engineer
+
+
+We have 3 deployments running within a namespace on an EKS cluster, call them “Service1”, “Service2”, “Service3” 
+and all 3 have their own nodeport svc configured call them “Service1NodePort”, “Service2NodePort”, “Service3NodePort”.
+We require an ingress that would allow a single external service to send requests to these deployments via https.
+Can you provide an example manifest yaml or yamls for the ingress?
+
+
+
+We have an S3 bucket with some uploaded NodeJS code within, call the bucket “Deployment” and the zipped up code “build.zip”.
+Could you provide a basic terraform setup (including all relevant file names) that would create 3 lambdas call them 
+(“Service1”, “Service2”, “Service3”) all running the build.zip code. The handler of each lambda should correspond to 
+the name of the lambda, e.g. Service1.lambdaHandler, etc.
+
+
