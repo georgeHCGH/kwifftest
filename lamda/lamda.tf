@@ -9,23 +9,23 @@ provider "aws" {
   region = "your_aws_region"
 }
 
-data "aws_s3_bucket" "selected" {
-  bucket = "Deployment"
-}
-
-resource "aws_s3_bucket" "deployment_bucket" {
-  bucket = "Deployment"
-}
-
 resource "aws_s3_bucket_object" "lambda_code_object" {
   bucket = aws_s3_bucket.Deployment.bucket
-  key    = "Build.zip"
-  source = data.archive_file.lambda_code.output_path
+  key    = key
+  source = build.zip
+}
+
+data "archive_file" "lambda_code" {
+  type        = "zip"
+  source_dir  = "aws_s3_bucket.Deployment"
+  output_path = "build.zip"
 }
 
 resource "aws_lambda_function" "service1" {
   function_name    = "Service1"
   role             = aws_iam_role.lambda.arn
+  s3_bucket        = "var.bucket_name"
+  s3_key           = "var.key"
   handler          = "Service1.lambdaHandler"
   runtime          = "nodejs14.x"
   filename         = "build.zip"
@@ -34,6 +34,8 @@ resource "aws_lambda_function" "service1" {
 
 resource "aws_lambda_function" "service2" {
   function_name    = "Service2"
+  s3_bucket        = "var.bucket_name"
+  s3_key           = "var.key"
   role             = aws_iam_role.lambda.arn
   handler          = "Service2.lambdaHandler"
   runtime          = "nodejs14.x"
@@ -43,6 +45,8 @@ resource "aws_lambda_function" "service2" {
 
 resource "aws_lambda_function" "service3" {
   function_name    = "Service3"
+  s3_bucket        = "var.bucket_name"
+  s3_key           = "var.key"
   role             = aws_iam_role.lambda.arn
   handler          = "Service3.lambdaHandler"
   runtime          = "nodejs14.x"
