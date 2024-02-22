@@ -12,14 +12,10 @@ provider "aws" {
 data "archive_file" "lambda_code" {
   type        = "zip"
   source_dir  = "aws_s3_bucket.Deployment" #maybe url to bucket would work here
+  source_file = "build.zip"
   output_path = "build.zip"
 }
 
-resource "aws_s3_bucket_object" "lambda_code_object" {
-  bucket = aws_s3_bucket.Deployment.bucket 
-  key    = key
-  source = build.zip
-}
 
 resource "aws_lambda_function" "service1" {
   function_name    = "Service1"
@@ -29,7 +25,6 @@ resource "aws_lambda_function" "service1" {
   handler          = "Service1.lambdaHandler"
   runtime          = "nodejs14.x"
   filename         = "build.zip"
-  source_code_hash = filebase64("build.zip")
 }
 
 resource "aws_lambda_function" "service2" {
@@ -40,7 +35,6 @@ resource "aws_lambda_function" "service2" {
   handler          = "Service2.lambdaHandler"
   runtime          = "nodejs14.x"
   filename         = "build.zip"
-  source_code_hash = filebase64("build.zip")
 }
 
 resource "aws_lambda_function" "service3" {
@@ -51,5 +45,4 @@ resource "aws_lambda_function" "service3" {
   handler          = "Service3.lambdaHandler"
   runtime          = "nodejs14.x"
   filename         = "build.zip"
-  source_code_hash = filebase64("build.zip")
 }
