@@ -9,16 +9,16 @@ provider "aws" {
   region = "your_aws_region"
 }
 
-resource "aws_s3_bucket_object" "lambda_code_object" {
-  bucket = aws_s3_bucket.Deployment.bucket
-  key    = key
-  source = build.zip
-}
-
 data "archive_file" "lambda_code" {
   type        = "zip"
-  source_dir  = "aws_s3_bucket.Deployment"
+  source_dir  = "aws_s3_bucket.Deployment" #maybe url to bucket would work here
   output_path = "build.zip"
+}
+
+resource "aws_s3_bucket_object" "lambda_code_object" {
+  bucket = aws_s3_bucket.Deployment.bucket 
+  key    = key
+  source = build.zip
 }
 
 resource "aws_lambda_function" "service1" {
